@@ -1,37 +1,59 @@
-## POLEJ3MBUT
+## File Registry
 
-### **Disable Task Manager.reg**
-- **Fungsi**: Menonaktifkan Task Manager dan fitur pencarian Windows
-- **Target**: `HKEY_CURRENT_USER`
-- **Efek**: 
-  - Task Manager tidak dapat dibuka
-  - Pencarian di Start Menu dinonaktifkan
-  - Search Box di taskbar disembunyikan
-  - Cortana dan Bing Search dinonaktifkan
+### Disable Task Manager.reg
+Menghilangkan akses Task Manager dari sistem Windows. Efek:
+- Task Manager tidak dapat dibuka melalui Ctrl+Shift+Esc
+- Task Manager tidak dapat dibuka melalui Ctrl+Alt+Del
+- Task Manager tidak dapat dibuka melalui Start Menu
+- Task Manager tidak dapat dibuka melalui Run dialog
 
-### **Enable Task Manager.reg**
-- **Fungsi**: Mengaktifkan kembali Task Manager dan fitur pencarian
-- **Target**: `HKEY_CURRENT_USER`
-- **Efek**: Mengembalikan semua fungsi ke kondisi normal
+### Enable Task Manager.reg
+Mengembalikan akses Task Manager ke sistem Windows. Efek:
+- Task Manager dapat dibuka kembali melalui semua metode
+- Mengembalikan fungsi normal Task Manager
 
-### **Hide Process.reg** ⚠️ (Butuh Admin Rights)
-- **Fungsi**: Menyembunyikan proses `dwagsvc.exe` dari monitoring tools
-- **Target**: `HKEY_LOCAL_MACHINE` (Memerlukan hak Administrator)
-- **Proses yang disembunyikan**:
-  - dwagsvc.exe (DWAgent Service)
-- **Efek**:
-  - `dwagsvc.exe` tersembunyi dari Task Manager (semua tab)
-  - Tidak terdeteksi oleh WMI queries
-  - Tidak muncul di PowerShell Get-Process
-  - EventLog access dibatasi
-  - Performance Counters dinonaktifkan
-  - Process Creation Auditing dinonaktifkan
-  - Proses tetap berjalan normal di background
+### Hide Process.reg (Basic Method)
+Menyembunyikan proses `dwagsvc.exe` dari monitoring tools dan Task Manager "Details" tab. Efek:
+- `dwagsvc.exe` tidak muncul di tab "Details", "Processes", dan "Services"
+- Proses tetap berjalan di background
+- Tidak terdeteksi oleh search/filter di Task Manager
+- Tidak terlihat di kolom Name, PID, Status
+- Membatasi akses EventLog
+- Menonaktifkan Performance Counters
+- Menonaktifkan Process Creation Auditing
+- Mengatur PowerShell execution policy ke "Restricted"
+- Memerlukan hak administrator
 
-### **Show Process.reg** ⚠️ (Butuh Admin Rights)
-- **Fungsi**: Mengembalikan visibilitas `dwagsvc.exe` dan monitoring tools
-- **Target**: `HKEY_LOCAL_MACHINE` (Memerlukan hak Administrator)
-- **Efek**: Mengembalikan visibilitas proses dan mengaktifkan kembali semua monitoring tools
+### Show Process.reg (Basic Restore)
+Mengembalikan visibilitas proses `dwagsvc.exe` di monitoring tools dan Task Manager. Efek:
+- `dwagsvc.exe` kembali terlihat di semua tab Task Manager
+- Mengaktifkan kembali EventLog access
+- Mengaktifkan kembali Performance Counters
+- Mengaktifkan kembali Process Creation Auditing
+- Mengatur PowerShell execution policy ke "RemoteSigned"
+
+### Hide Process Advanced.reg (Advanced Method)
+Metode hiding yang lebih canggih dengan 10 teknik berbeda untuk menyembunyikan `dwagsvc.exe`. Efek:
+- Semua efek dari metode basic
+- Menonaktifkan Performance Counters sistem
+- Menggunakan GlobalFlag dan VerifierFlags di IFEO
+- Menonaktifkan WMI Process Enumeration
+- Menyembunyikan dari Services.msc
+- Menggunakan Registry Virtualization
+- Mengaktifkan Silent Process Exit
+- Lebih sulit dideteksi oleh security tools
+- Efek lebih permanen dan mendalam
+
+### Show Process Advanced.reg (Advanced Restore)
+Mengembalikan semua pengaturan dari metode advanced hiding. Efek:
+- Mengembalikan semua fungsi monitoring sistem
+- Mengaktifkan kembali Performance Counters
+- Mengembalikan WMI functionality
+- Mengembalikan Services.msc visibility
+- Menghapus Registry Virtualization
+- Menonaktifkan Silent Process Exit
+
+
 
 ## Cara Penggunaan
 
@@ -125,6 +147,54 @@ Jika terjadi masalah, buka Registry Editor manual:
    - `HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System`
    - Hapus nilai `DisableTaskMgr`
 3. Restart komputer
+
+## Troubleshooting
+
+### Jika Registry Entry Tidak Bekerja
+
+Jika proses `dwagsvc.exe` masih terlihat setelah menjalankan registry, coba solusi berikut:
+
+#### 1. Gunakan Metode Advanced
+```cmd
+# Jalankan sebagai Administrator
+regedit /s "Hide Process Advanced.reg"
+```
+
+#### 2. Restart Komputer
+Beberapa registry changes memerlukan restart untuk efek penuh.
+
+#### 3. Cek Service Status
+```cmd
+# Stop service terlebih dahulu
+net stop "DWAgent"
+# Jalankan registry
+regedit /s "Hide Process Advanced.reg"
+# Start service kembali
+net start "DWAgent"
+```
+
+#### 4. Manual Registry Edit
+Jika masih tidak bekerja, edit registry secara manual:
+1. Buka `regedit` sebagai Administrator
+2. Navigate ke: `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options`
+3. Buat key baru: `dwagsvc.exe`
+4. Tambahkan String Value: `Debugger` = `svchost.exe -k netsvcs`
+
+#### 5. Verifikasi Manual
+```cmd
+# Cek apakah registry entry sudah ada
+reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\dwagsvc.exe" /v Debugger
+
+# Cek apakah proses masih terlihat
+tasklist | findstr dwagsvc.exe
+```
+
+### Penyebab Umum Kegagalan
+- **Tidak running sebagai Administrator**: Registry HKLM memerlukan elevated privileges
+- **Antivirus blocking**: Beberapa antivirus memblokir registry changes
+- **Service protection**: Windows melindungi beberapa system services
+- **UAC interference**: User Account Control dapat memblokir changes
+- **Timing issue**: Service mungkin perlu di-restart setelah registry change
 
 ## Menambahkan Proses Custom
 
