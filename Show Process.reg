@@ -1,0 +1,38 @@
+Windows Registry Editor Version 5.00
+
+; Mengembalikan visibilitas proses di Task Manager dan Process Explorer
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe]
+"Debugger"=-
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\procexp.exe]
+"Debugger"=-
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\procexp64.exe]
+"Debugger"=-
+
+; Mengembalikan akses service di Services.msc
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog\Application]
+"RestrictGuestAccess"=-
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog\System]
+"RestrictGuestAccess"=-
+
+; Enable Process Creation Auditing
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\Audit]
+"AuditProcessTracking"=dword:00000001
+
+; Enable WMI queries
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WBEM\CIMOM]
+"EnableEvents"=dword:00000001
+"EnableStartupHeapPreallocation"=dword:00000001
+
+; Enable Performance Counters
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib]
+"Disable Performance Counters"=-
+
+; Enable PowerShell Get-Process
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell]
+"ExecutionPolicy"="RemoteSigned"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PowerShell\3\ShellIds\Microsoft.PowerShell]
+"ExecutionPolicy"="RemoteSigned"
