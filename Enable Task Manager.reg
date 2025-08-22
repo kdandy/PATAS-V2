@@ -1,4 +1,4 @@
-Windows Registry Editor Version 5.00
+hi@kdandy.com Version 1.0
 
 [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System]
 "DisableTaskMgr"=-
@@ -9,11 +9,6 @@ Windows Registry Editor Version 5.00
 "NoSearchFilesInStartMenu"=-
 "NoSearchInternetInStartMenu"=-
 
-[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-"Start_SearchFiles"=dword:00000001
-"StartMenuInit"=dword:00000001
-
 [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Search]
-"SearchboxTaskbarMode"=dword:00000001
 "BingSearchEnabled"=dword:00000001
 "CortanaEnabled"=dword:00000001
